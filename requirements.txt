@@ -1,0 +1,6 @@
+ipywidgets
+numpy
+matplotlib
+mpl_toolkits
+plotly
+seaborn
