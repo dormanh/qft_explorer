@@ -1,7 +1,7 @@
 import numpy as np
 
 from ipywidgets import Button, IntSlider, Layout, VBox, interact
-from math import ceil
+from math import ceil, gcd
 from plotly import graph_objects as go
 
 
@@ -14,7 +14,7 @@ class ModuloFigure(go.FigureWidget):
         self._nqbits = 2 ** ceil(np.log2(N))
         self._x = np.arange(self._nqbits)
         self._r = np.array([a ** int(x) % N for x in self._x])
-        self._p = np.diff(self._x[np.where(self._r == 1)][:2])[0]
+        self._p = self._x[np.where(self._r == 1)][0]
         self._runique = np.unique(self._r)
         self._button = Button(description="make measurement")
         self._slider = IntSlider(
@@ -148,3 +148,66 @@ class ModuloFigure(go.FigureWidget):
                 f"{', '.join(xs.astype(str))}<br>and the period is {self._p} "
                 "(but we can't directly measure that)",
             )
+
+
+def modulo_figure(N: int, a: int, selected: int, measured: bool) -> go.Figure:
+    """Constructs a figure to represents the modulo function,
+    the period of which has to be found in order to factor N."""
+    assert (1 < a < N - 1) & (gcd(a, N) == 1), "invalid `a` parameter"
+
+    n_qbits = 2 ** ceil(np.log2(N))
+    basis_states = np.arange(n_qbits)
+    remainders = np.array([a ** int(x) % N for x in basis_states])
+    period = basis_states[np.where(remainders == 1)][0]
+
+    point_traces = [
+        go.Scatter(
+            x=[x],
+            y=[r],
+            mode="markers",
+            marker=dict(color="teal", size=10 if x == selected else 5),
+            name=str(x),
+        )
+        for x, r in zip(basis_states, remainders)
+    ]
+    fig = go.Figure(
+        data=[
+            go.Scatter(
+                x=basis_states,
+                y=remainders,
+                mode="lines",
+                line_color="coral",
+            ),
+            *point_traces,
+        ],
+        layout=dict(
+            xaxis=dict(range=(-1, n_qbits + 1), title=f"$\large n = 1, ... {n_qbits}$"),
+            yaxis=dict(
+                range=(remainders.min() - 1, (rmax := remainders.max()) + 1),
+                title=f"$\large ({a=})^n mod ({N=})$",
+            ),
+            showlegend=False,
+        ),
+    )
+    if measured:
+        measurement = np.random.choice(remainders)
+        xs = basis_states[np.where(remainders == measurement)]
+        ys = np.ones_like(xs) * measurement
+        return fig.add_traces(
+            [
+                go.Scatter(
+                    x=xs,
+                    y=ys,
+                    mode="markers",
+                    marker=dict(color="black", size=10),
+                ),
+                go.Scatter(
+                    x=xs,
+                    y=ys,
+                    mode="markers+lines",
+                    marker=dict(color="white", size=5),
+                    line_color="black",
+                ),
+            ]
+        )
+    return fig
