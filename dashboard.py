@@ -4,8 +4,10 @@ import numpy as np
 from dash import dcc, html
 from dash.dependencies import Input, Output
 from math import ceil
+from typing import Callable
 
 from figures import modulo_figure
+from narrative import narrative_dict
 
 app = dash.Dash(
     __name__,
@@ -27,44 +29,51 @@ basis_states = np.arange(n_qbits)
 remainders = np.array([a ** int(x) % N for x in basis_states])
 
 main_title = "Explore the quantum Fourier transform!"
-subtitles = ["The period-finding problem"]
 margin_style = dict(marginTop=100, marginBottom=100, marginLeft=200, marginRight=200)
 font_style = dict(fontSize=16, fontFamily="courier")
+paragraph_style = dict(
+    textAlign="justify",
+    fontSize=14,
+    fontWeight="normal",
+)
 
-period_finding_element = html.Div(
-    children=[
-        html.H2(subtitles[0]),
-        html.H5(
-            children=(
-                f"The system is set to an equal superposition of n being in each of the {n_qbits}, "
-                f"and the associated remainder in each of the {len(set(remainders))} possible basis states. "
-                f"Next, one of the possible remainders is measured, and the system collapses to a superposition "
-                "of the basis states that are consistent with this measurement."
-            ),
-            style=dict(
-                textAlign="justify",
-                fontSize=14,
-                fontWeight="normal",
-            ),
-        ),
-        html.Div(
-            children=[
-                dcc.Slider(id="basis_state_slider", min=0, max=N, step=1, value=0),
-                html.Button(
-                    "make measurement",
-                    id="measure_remainder_button",
-                    style=dict(marginTop=20),
-                ),
-                html.Div(id="modulo_figure"),
-            ],
+sections = dict(
+    intro=[],
+    period_finding_problem=[
+        dcc.Slider(id="basis_state_slider", min=0, max=N, step=1, value=0),
+        html.Button(
+            "make measurement",
+            id="measure_remainder_button",
             style=dict(marginTop=20),
         ),
+        html.Div(id="modulo_figure"),
     ],
-    style=dict(marginTop=20),
 )
 
 app.layout = html.Div(
-    children=[html.Div(html.H1(main_title)), period_finding_element],
+    children=[
+        html.H1(children=main_title),
+        *[
+            html.Div(
+                id=k,
+                children=[
+                    html.H2(children=d["title"]),
+                    html.H5(
+                        id=f"{k}_text",
+                        children=d["text"](n_qbits, remainders)
+                        if isinstance(d["text"], Callable)
+                        else d["text"],
+                        style=paragraph_style,
+                    ),
+                    html.Div(
+                        children=sections[k],
+                        style=dict(marginTop=20),
+                    ),
+                ],
+            )
+            for k, d in narrative_dict.items()
+        ],
+    ],
     style=dict(**margin_style, **font_style),
 )
 
