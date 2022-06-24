@@ -4,6 +4,8 @@ from ipywidgets import Button, IntSlider, Layout, VBox, interact
 from math import ceil, gcd
 from plotly import graph_objects as go
 
+from computations import compute_remainders
+
 
 class ModuloFigure(go.FigureWidget):
     """Intective figurewidget designed for the exploration of the period-finding problem."""
@@ -150,15 +152,13 @@ class ModuloFigure(go.FigureWidget):
             )
 
 
-def modulo_figure(N: int, a: int, selected: int, measured: bool) -> go.Figure:
+def modulo_figure(
+    N: int, a: int, n_states: int, selected: int, measured: bool
+) -> go.Figure:
     """Constructs a figure to represents the modulo function,
     the period of which has to be found in order to factor N."""
-    assert (1 < a < N - 1) & (gcd(a, N) == 1), "invalid `a` parameter"
-
-    n_qbits = 2 ** ceil(np.log2(N))
-    basis_states = np.arange(n_qbits)
-    remainders = np.array([a ** int(x) % N for x in basis_states])
-    period = basis_states[np.where(remainders == 1)][0]
+    basis_states = np.arange(n_states)
+    remainders = compute_remainders(N, a, n_states)
 
     point_traces = [
         go.Scatter(
@@ -181,9 +181,11 @@ def modulo_figure(N: int, a: int, selected: int, measured: bool) -> go.Figure:
             *point_traces,
         ],
         layout=dict(
-            xaxis=dict(range=(-1, n_qbits + 1), title=f"$\large n = 1, ... {n_qbits}$"),
+            xaxis=dict(
+                range=(-1, n_states + 1), title=f"$\large n = 1, ... {n_states}$"
+            ),
             yaxis=dict(
-                range=(remainders.min() - 1, (rmax := remainders.max()) + 1),
+                range=(remainders.min() - 1, remainders.max() + 1),
                 title=f"$\large ({a=})^n mod ({N=})$",
             ),
             showlegend=False,
