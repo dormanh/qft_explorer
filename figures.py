@@ -1,7 +1,7 @@
 import numpy as np
 
 from ipywidgets import Button, IntSlider, Layout, VBox, interact
-from math import ceil, gcd
+from math import ceil
 from plotly import graph_objects as go
 
 from computations import compute_remainders
@@ -165,7 +165,7 @@ def modulo_figure(
             x=[x],
             y=[r],
             mode="markers",
-            marker=dict(color="teal", size=10 if x == selected else 5),
+            marker=dict(color="black" if (x == selected) else "teal", size=5),
             name=str(x),
         )
         for x, r in zip(basis_states, remainders)
@@ -181,16 +181,14 @@ def modulo_figure(
             *point_traces,
         ],
         layout=dict(
-            xaxis=dict(
-                range=(-1, n_states + 1), title=f"$\large n = 1, ... {n_states}$"
-            ),
+            xaxis=dict(range=(-1, n_states + 1), title="n"),
             yaxis=dict(
-                range=(remainders.min() - 1, remainders.max() + 1),
-                title=f"$\large ({a=})^n mod ({N=})$",
+                range=(min(remainders) - 1, max(remainders) + 1),
+                title="value of the modulo function",
             ),
             showlegend=False,
         ),
-    )
+    ).add_vline(selected, line=dict(color="black", width=2, dash="dash"))
     if measured:
         measurement = np.random.choice(remainders)
         xs = basis_states[np.where(remainders == measurement)]

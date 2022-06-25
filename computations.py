@@ -29,6 +29,6 @@ def compute_valid_as(N: int) -> list[int]:
     return [k for k in range(2, N) if math.gcd(k, N) == 1]
 
 
-def compute_remainders(N: int, a: int, n_qubits: int) -> list[int]:
+def compute_remainders(N: int, a: int, n_states: int) -> list[int]:
     """Computes the array a^n mod N, where n = 1, ..., N - 1."""
-    return [(a**n) % N for n in range(exp2int(n_qubits))]
+    return [(a**n) % N for n in range(n_states)]
