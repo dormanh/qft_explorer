@@ -9,7 +9,8 @@ INITIAL_N = 35
 main_title = "Explore the quantum Fourier transform!"
 vertical_margin = dict(marginTop=50, marginBottom=50)
 horizontal_margin = dict(marginLeft=200, marginRight=200)
-font_style = dict(fontSize=16, fontFamily="courier")
+font_style = dict(fontSize=16, fontFamily="sherif")
+# slider_style = dict(background_color="teal")
 subtitle_style = dict(fontSize=16, fontWeight="bold")
 paragraph_style = dict(
     textAlign="justify",

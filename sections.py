@@ -5,6 +5,7 @@ from dash import dcc, html
 
 from constants import (
     paragraph_style,
+    # slider_style,
     subtitle_style,
     vertical_margin,
     INITIAL_N,
@@ -39,7 +40,7 @@ period = html.Div(
                     "semiprime",
                     id="semiprime",
                     style=dict(
-                        textDecoration="underline", color="purple", cursor="pointer"
+                        textDecoration="underline", color="teal", cursor="pointer"
                     ),
                 ),
                 " $N$ is equivalent to finding the period of the modulo function $a^n mod N$, "
