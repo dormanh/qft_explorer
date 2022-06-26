@@ -55,10 +55,10 @@ def update_a_selector(N_idx: int) -> tuple[list[int], int]:
 )
 def update_period_finding_text(N_idx: int, a: int) -> str:
     return (
-        f"The system is set to an equal superposition of n being in each of the {(N:=VALID_NS[N_idx])}, "
-        f"and the associated remainder in each of the {len(set(compute_remainders(N, a, N_STATES)))} "
-        f"possible basis states. Next, one of the possible remainders is measured, and the system collapses "
-        "to a superposition of the basis states that are consistent with this measurement."
+        f"The system is set to an equal superposition of the exponent n being in each of the {(N:=VALID_NS[N_idx])}, "
+        f"and the resulting remainder in each of the {len(set(compute_remainders(N, a, N_STATES)))} "
+        f"possible basis states. Next, one of the possible remainders is measured, making the system collapse "
+        "into a superposition of the basis states that are consistent with this measurement."
     )
 
 

@@ -162,13 +162,19 @@ def modulo_figure(
 
     point_traces = [
         go.Scatter(
-            x=[x],
+            x=[n],
             y=[r],
             mode="markers",
-            marker=dict(color="black" if (x == selected) else "teal", size=5),
-            name=str(x),
+            marker=dict(
+                color="black" if (n == selected) else "white",
+                size=10,
+                line=dict(color="coral", width=2),
+            ),
+            name=str(n),
+            hoverinfo="text",
+            hovertext=f"{n=} <br>qubit state={n:06b} <br>remainder={r}",
         )
-        for x, r in zip(basis_states, remainders)
+        for n, r in zip(basis_states, remainders)
     ]
     fig = go.Figure(
         data=[
@@ -176,19 +182,32 @@ def modulo_figure(
                 x=basis_states,
                 y=remainders,
                 mode="lines",
-                line_color="coral",
+                line=dict(color="coral"),
+                hoverinfo="skip",
             ),
             *point_traces,
         ],
         layout=dict(
-            xaxis=dict(range=(-1, n_states + 1), title="n"),
+            xaxis=dict(
+                title="n",
+                range=(-1, n_states + 1),
+                dtick=1,
+                ticklabelstep=5,
+                linecolor="black",
+                gridcolor="lightgrey",
+            ),
             yaxis=dict(
+                title="remainder",
                 range=(min(remainders) - 1, max(remainders) + 1),
-                title="value of the modulo function",
+                dtick=1,
+                ticklabelstep=5,
+                linecolor="black",
+                gridcolor="lightgrey",
             ),
             showlegend=False,
+            plot_bgcolor="white",
         ),
-    ).add_vline(selected, line=dict(color="black", width=2, dash="dash"))
+    )
     if measured:
         measurement = np.random.choice(remainders)
         xs = basis_states[np.where(remainders == measurement)]
@@ -199,13 +218,13 @@ def modulo_figure(
                     x=xs,
                     y=ys,
                     mode="markers",
-                    marker=dict(color="black", size=10),
+                    marker=dict(color="black", size=12),
                 ),
                 go.Scatter(
                     x=xs,
                     y=ys,
                     mode="markers+lines",
-                    marker=dict(color="white", size=5),
+                    marker=dict(color="white", size=8),
                     line_color="black",
                 ),
             ]

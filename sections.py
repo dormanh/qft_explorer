@@ -66,7 +66,11 @@ period = html.Div(
         ),
         html.H4("select the a parameter", style=subtitle_style),
         dcc.Slider(id="a_selector", min=0, step=1),
-        html.H4("select a basis state", style=subtitle_style),
+        html.P(
+            id="period_text_2",
+            style=dict(**paragraph_style, marginTop=20),
+        ),
+        html.H4("highlight a basis state", style=subtitle_style),
         dcc.Slider(
             id="basis_state_slider",
             min=0,
@@ -79,10 +83,6 @@ period = html.Div(
             id="measure_remainder_button",
             children="make measurement",
             style=dict(marginTop=20),
-        ),
-        html.P(
-            id="period_text_2",
-            style=dict(**paragraph_style, marginTop=20),
         ),
         html.Div(id="modulo_figure"),
     ],
