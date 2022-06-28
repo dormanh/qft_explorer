@@ -36,7 +36,7 @@ def modulo_func(N: int, a: int, n: int) -> int:
 
 def compute_remainders(N: int, a: int) -> list[int]:
     """Computes the array a^n mod N, where n = 1, ..., N - 1."""
-    return [modulo_func(N, a, n) for n in range(N)]
+    return [modulo_func(N, a, n) for n in range(1, N)]
 
 
 def compute_consistent_exponents(N: int, a: int, remainder: int) -> list[int]:
