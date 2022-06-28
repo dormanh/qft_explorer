@@ -1,1 +1,1 @@
-python dashboard.py
+web: python dashboard.py
