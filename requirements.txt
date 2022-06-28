@@ -1,5 +1,5 @@
 dash
-dash_bootstrap_components
-dash_latex
+dash-bootstrap-components
+dash-latex
 numpy
 plotly
