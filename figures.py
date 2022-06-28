@@ -9,7 +9,7 @@ from computations import compute_consistent_exponents, compute_remainders
 def modulo_figure(N: int, a: int, measurement: Optional[int] = None) -> go.Figure:
     """Constructs a figure to represents the modulo function,
     the period of which has to be found in order to factor N."""
-    basis_states = np.arange(N)
+    ns = np.arange(1, N)
     remainders = compute_remainders(N, a)
 
     point_traces = [
@@ -26,12 +26,12 @@ def modulo_figure(N: int, a: int, measurement: Optional[int] = None) -> go.Figur
             hoverinfo="text",
             hovertext=f"{n=} <br>qubit state={n:06b} <br>remainder={r}",
         )
-        for n, r in zip(basis_states, remainders)
+        for n, r in zip(ns, remainders)
     ]
     fig = go.Figure(
         data=[
             go.Scatter(
-                x=basis_states,
+                x=ns,
                 y=remainders,
                 mode="lines",
                 line=dict(color="teal"),
