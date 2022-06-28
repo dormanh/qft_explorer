@@ -1,9 +1,14 @@
 import dash
+import numpy as np
+
 from dash import dcc, html
+from dash import callback_context as context
 from dash.dependencies import Input, Output
 
+from computations import compute_consistent_exponents
+
+
 from constants import (
-    N_STATES,
     VALID_NS,
     font_style,
     horizontal_margin,
@@ -50,35 +55,34 @@ def update_a_selector(N_idx: int) -> tuple[list[int], int]:
 
 
 @app.callback(
-    Output("period_text_2", "children"),
-    [Input("N_selector", "value"), Input("a_selector", "value")],
-)
-def update_period_finding_text(N_idx: int, a: int) -> str:
-    return (
-        f"The system is set to an equal superposition of the exponent n being in each of the {(N:=VALID_NS[N_idx])}, "
-        f"and the resulting remainder in each of the {len(set(compute_remainders(N, a, N_STATES)))} "
-        f"possible basis states. Next, one of the possible remainders is measured, making the system collapse "
-        "into a superposition of the basis states that are consistent with this measurement."
-    )
-
-
-@app.callback(
     Output("modulo_figure", "children"),
+    Output("measure_remainder_msg", "children"),
+    Output("measure_remainder_button", "n_clicks"),
     [
         Input("N_selector", "value"),
         Input("a_selector", "value"),
-        Input("basis_state_slider", "value"),
         Input("measure_remainder_button", "n_clicks"),
     ],
 )
-def update_modulo_figure(
-    N_idx: int, a: int, basis_state: int, n_clicks: int
-) -> dcc.Graph:
+def update_modulo_figure(N_idx: int, a: int, n_clicks: int) -> tuple[dcc.Graph, str]:
     """Updates the modulo figure, if a parameter changes, a
     different basis state is selected or a measurement is made."""
-    return dcc.Graph(
-        figure=modulo_figure(VALID_NS[N_idx], a, N_STATES, basis_state, bool(n_clicks))
+    if context.triggered[0]["prop_id"].split(".")[0] != "measure_remainder_button":
+        n_clicks = 0
+    N = VALID_NS[N_idx]
+    remainders = compute_remainders(N, a)
+    measurement = np.random.choice(remainders) if n_clicks else None
+    fig = dcc.Graph(figure=modulo_figure(N, a, measurement=measurement))
+    text = (
+        (
+            f"Out of the possible {len(set(remainders))} remainders, you measured {measurement}, "
+            f"causing the system to collapse into a superposition of the following basis states: "
+            f"{', '.join(map(str, compute_consistent_exponents(N, a, measurement)))}."
+        )
+        if n_clicks
+        else ""
     )
+    return fig, text, n_clicks
 
 
 if __name__ == "__main__":

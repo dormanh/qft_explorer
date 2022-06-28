@@ -29,6 +29,16 @@ def compute_valid_as(N: int) -> list[int]:
     return [k for k in range(2, N) if math.gcd(k, N) == 1]
 
 
-def compute_remainders(N: int, a: int, n_states: int) -> list[int]:
+def modulo_func(N: int, a: int, n: int) -> int:
+    """Computes the module function value for the given parameters."""
+    return (a**n) % N
+
+
+def compute_remainders(N: int, a: int) -> list[int]:
     """Computes the array a^n mod N, where n = 1, ..., N - 1."""
-    return [(a**n) % N for n in range(n_states)]
+    return [modulo_func(N, a, n) for n in range(N)]
+
+
+def compute_consistent_exponents(N: int, a: int, remainder: int) -> list[int]:
+    """Given a remainder, returns all exponents consistent with it up to N."""
+    return [n for n in range(1, N) if modulo_func(N, a, n) == remainder]

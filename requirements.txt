@@ -1,6 +1,5 @@
-ipywidgets
+dash
+dash_bootstrap_components
+dash_latex
 numpy
-matplotlib
-mpl_toolkits
 plotly
-seaborn
