@@ -1,3 +1,7 @@
+# TODO:
+# - in general: show equations with concrete numbers
+# - add image of quantum circuit
+
 import dash
 import numpy as np
 
@@ -64,12 +68,15 @@ def update_a_selector(N_idx: int) -> tuple[list[int], int]:
         Input("measure_remainder_button", "n_clicks"),
     ],
 )
-def update_modulo_figure(N_idx: int, a: int, n_clicks: int) -> tuple[dcc.Graph, str]:
+def update_modulo_figure(
+    N_idx: int, a_idx: int, n_clicks: int
+) -> tuple[dcc.Graph, str]:
     """Updates the modulo figure, if a parameter changes, a
     different basis state is selected or a measurement is made."""
     if context.triggered[0]["prop_id"].split(".")[0] != "measure_remainder_button":
         n_clicks = 0
     N = VALID_NS[N_idx]
+    a = compute_valid_as(N)[a_idx]
     remainders = compute_remainders(N, a)
     measurement = np.random.choice(remainders) if n_clicks else None
     fig = dcc.Graph(figure=modulo_figure(N, a, measurement=measurement))

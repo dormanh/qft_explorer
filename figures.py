@@ -24,7 +24,10 @@ def modulo_figure(N: int, a: int, measurement: Optional[int] = None) -> go.Figur
             ),
             name=str(n),
             hoverinfo="text",
-            hovertext=f"{n=} <br>qubit state={n:06b} <br>remainder={r}",
+            hovertext=(
+                f"{n=} <br>qubit state={n:06b} <br>{a} to the power of {n} is {a**n}, "
+                f"which divided by {N} gives the remainder {r}"
+            ),
         )
         for n, r in zip(ns, remainders)
     ]

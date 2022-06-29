@@ -15,4 +15,6 @@ paragraph_style = dict(
     textAlign="justify",
     fontSize=14,
     fontWeight="normal",
+    marginTop=20,
+    marginBottom=20,
 )
