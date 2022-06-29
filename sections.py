@@ -16,6 +16,7 @@ from constants import (
 
 
 def make_paragraph(contents: list) -> html.P:
+    """Constructs a paragraph consisting of DashLatex and Span components."""
     return html.P(
         children=[
             html.Span(
@@ -28,6 +29,15 @@ def make_paragraph(contents: list) -> html.P:
             for c in contents
         ],
         style=paragraph_style,
+    )
+
+
+def make_tooltip(text: str, target: str) -> dbc.Tooltip:
+    """Constructs a tooltip that supports latex in its text."""
+    return dbc.Tooltip(
+        dl.DashLatex(text),
+        target=target,
+        style=dict(fontSize=18),
     )
 
 
@@ -137,36 +147,22 @@ period = html.Div(
                 )
             ]
         ),
-        dbc.Tooltip(
-            "A semiprime is the product of two primes.",
-            target="semiprime",
-        ),
-        dbc.Tooltip(
-            dl.DashLatex(
-                "The period $r$ of a function $f$ is a number such that the following equality holds for each $x$ "
+        *[
+            make_tooltip(text, target)
+            for target, text in dict(
+                semiprime="A semiprime is the product of two primes.",
+                period="The period $r$ of a function $f$ is a number such that the following equality holds for each $x$ "
                 "in $f$'s domain: $f(x) = f(x + r)$. In other words, $f$ is invariant to translation by $r$. Not all "
-                "functions have a period. Those that do are called periodic."
-            ),
-            target="period",
-        ),
-        dbc.Tooltip(
-            dl.DashLatex(
-                "Exponential scaling in this case means that if $N$ increases by one binary digit, finding the period "
-                "requires twice as much computing time (and $10$ times as much, if $N$ increases by one decimal digit)."
-            ),
-            target="exponentially",
-        ),
-        dbc.Tooltip(
-            "A basis state is a sequence of 1-s and 0-s that represent an integer in binary notation. "
-            "This is what the quantum system collapses into, when measured. ",
-            target="basis_state",
-        ),
-        dbc.Tooltip(
-            "The wave function describes the evolution of a quantum system over time. It represents the probability "
-            "of measuring each basis state. It also has a weird quantum-property: the so called phase that is not "
-            "measurable directly, but plays a crucial role in the QFT, as we'll see later.",
-            target="wave_function",
-        ),
+                "functions have a period. Those that do are called periodic.",
+                exponentially="Exponential scaling in this case means that if $N$ increases by one binary digit, finding the "
+                "period requires twice as much computing time (and $10$ times as much, if $N$ increases by one decimal digit).",
+                basis_state="A basis state is a sequence of 1-s and 0-s that represent an integer in binary notation. "
+                "This is what the quantum system collapses into, when measured. ",
+                wave_function="The wave function describes the evolution of a quantum system over time. It represents the "
+                "probability of measuring each basis state. It also has a weird quantum-property: the so called phase that is "
+                "not measurable directly, but plays a crucial role in the QFT, as we'll see later.",
+            ).items()
+        ],
         html.P(dl.DashLatex("select $N$"), style=subtitle_style),
         dcc.Slider(
             id="N_selector",
